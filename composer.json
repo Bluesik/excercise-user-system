@@ -1,0 +1,15 @@
+{
+    "require": {
+        "catfan/medoo": "^1.5",
+        "symfony/var-dumper": "^4.1"
+    },
+    "autoload": {
+        "files": [
+            "functions.php",
+            "routes.php"
+        ],
+        "classmap": [
+            "app/"
+        ]
+    }
+}
