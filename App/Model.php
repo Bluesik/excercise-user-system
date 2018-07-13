@@ -12,7 +12,8 @@ abstract class Model
      * @param array $data
      * @return bool|null
      */
-    public static function create (array $data = []) : ?bool{
+    public static function create (array $data = []) : ?bool
+    {
         if(empty($data))
             return false;
         
@@ -25,7 +26,8 @@ abstract class Model
      * @param int $id
      * @return array|null
      */
-    public static function find (int $id) : ?array{
+    public static function find (int $id) : ?array
+    {
         return Db::find(static::$table, $id) ?: null;
     }
 
@@ -36,8 +38,9 @@ abstract class Model
      * @param array $columns
      * @return array|null
      */
-    public static function where (array $where = [], array $columns = []) : ?array{
-        return Db::where(static::$table, $where,$columns);
+    public static function where (array $where = [], array $columns = []) : ?array
+    {
+        return Db::where(static::$table, $where, $columns);
     }
 
     /**
@@ -50,12 +53,25 @@ abstract class Model
     }
 
     /**
+     * Update all rows matching the where clause
+     *
+     * @param array $data
+     * @param array $where
+     * @return void
+     */
+    public static function update (array $data = [], array $where = []) : void
+    {
+        Db::update(static::$table, $data, $where);
+    }
+
+    /**
      * Check if a given record exists in the table
      *
      * @param array $where
      * @return bool
      */
-    public static function exists (array $where) : ?bool{
+    public static function exists (array $where) : ?bool
+    {
         return Db::exists(static::$table, $where) ?: null;
     }
 }

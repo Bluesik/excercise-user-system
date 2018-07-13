@@ -53,17 +53,18 @@ class Route{
      * @param string $path
      * @return void
      */
-    public static function call (string $requestType, string $path) : mixed
+    public static function call (string $requestType, string $path) : void
     {        
         if(static::routeExists($requestType, $path)){
             $action                = static::$routes[$requestType][$path];
             [$controller, $method] = explode('@', $action);
             $controller            = static::$controllersPath . $controller;
 
-            return (new $controller)->$method();
+            (new $controller)->$method();
+        }else{
+            die('404 - Route not found');
         }
 
-        die('404 - Route not found');
     }
 
     /**

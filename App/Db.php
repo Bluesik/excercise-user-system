@@ -4,7 +4,7 @@ namespace App;
 
 use Medoo\Medoo;
 
-class Db extends Medoo{
+class Db{
     protected static $db;
 
     /**
@@ -26,7 +26,7 @@ class Db extends Medoo{
      */
     public static function create (string $table, array $data = []) : bool{
         static::$db->insert($table, $data);
-        
+
         return static::lastInsertedId() > 0;
     }
 
@@ -70,6 +70,20 @@ class Db extends Medoo{
     }
 
     /**
+     * Update all rows matching the where clause
+     *
+     * @param string $table
+     * @param array $data
+     * @param array $where
+     * @return void
+     */
+    public static function update (string $table, array $data = [], array $where = []) : void{
+        if(empty($data)) return;
+
+        static::$db->update($table, $data, $where);
+    }
+
+    /**
      * Get last executed query
      *
      * @return string
@@ -84,6 +98,6 @@ class Db extends Medoo{
      * @return int
      */
     public static function lastInsertedId () : int{
-        return static::$db->id();
+        return static::$db->lastInsertedId() ?? 0;
     }
 }
