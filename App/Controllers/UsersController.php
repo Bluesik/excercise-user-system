@@ -8,6 +8,11 @@ use App\Validation\ChangePasswordFormValidation;
 use App\Validation\ForgotPasswordFormValidation;
 
 class UsersController extends Controller{
+    public function __construct (array $middleware = [])
+    {
+        $this->middleware($middleware);
+    }
+
     /**
      * Display user profile
      *
@@ -15,9 +20,6 @@ class UsersController extends Controller{
      */
     public function profile () : void
     {
-        if(! Auth::user())
-            header('Location: /login');
-
         view('user.profile');
     }
 

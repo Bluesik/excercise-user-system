@@ -4,13 +4,6 @@ namespace App;
 
 class Route{
     /**
-     * Default controllers path
-     *
-     * @var string
-     */
-    protected static $controllersPath = '\\App\\Controllers\\';
-
-    /**
      * Route list
      *
      * @var array
@@ -22,6 +15,7 @@ class Route{
         'put'    => [],
         'delete' => [],
     ];
+
 
     /**
      * Which methods are we allowing to use
@@ -41,9 +35,13 @@ class Route{
      * @param string $action
      * @return void
      */
-    protected static function addRoute (string $requestType, string $path, string $action) : void
+    protected static function addRoute (string $requestType, string $path, string $action, array $options = []) : void
     {
-        static::$routes[$requestType][$path] = $action;
+        static::$routes[$requestType][$path] = [
+            'action'     => $action,
+            'middleware' => static::normalizeMiddleware($options),
+            'namespace'  => $options['namespace'] ?? '\\App\\Controllers\\',
+        ];
     }
     
     /**
@@ -54,13 +52,13 @@ class Route{
      * @return void
      */
     public static function call (string $requestType, string $path) : void
-    {        
+    {      
         if(static::routeExists($requestType, $path)){
-            $action                = static::$routes[$requestType][$path];
-            [$controller, $method] = explode('@', $action);
-            $controller            = static::$controllersPath . $controller;
+            $route                 = static::$routes[$requestType][$path];
+            [$controller, $method] = explode('@', $route['action']);
+            $controller            = $route['namespace'] . $controller;
 
-            (new $controller)->$method();
+            (new $controller($route['middleware']))->$method();            
         }else{
             die('404 - Route not found');
         }
@@ -90,6 +88,27 @@ class Route{
     }
 
     /**
+     * Normalize middleware
+     *
+     * @param array $options
+     * @return array
+     */
+    protected static function normalizeMiddleware (array $options = []) : array
+    {
+        $middleware = $options['middleware'] ?? null;
+
+        if($middleware){
+            if(is_string($middleware)){
+                return explode('.', $middleware);
+            }
+
+            return $middleware;
+        }
+
+        return [];
+    }
+
+    /**
      * Called when static method does not exist
      *
      * @param string $name
@@ -101,4 +120,5 @@ class Route{
         if(static::isMethodAllowed($method))
             static::addRoute($method, ...$arguments);
     }
+
 }

@@ -12,6 +12,7 @@ require 'vendor/autoload.php';
 $config = require 'config.php';
 
 Db::connect($config['db']);
+
 global $app;
 
 $app['user'] = User::isLoggedIn() ? User::find($_SESSION['user']['id']) : null;

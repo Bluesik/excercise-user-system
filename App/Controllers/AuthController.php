@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Db;
 use App\Auth;
 use App\User;
+use Exception;
 use App\Validation\LoginFormValidation;
 use App\Validation\RegisterFormValidation;
 
@@ -17,9 +18,6 @@ class AuthController extends Controller
      */
     public function login ()
     {
-        if(Auth::user())
-            header('Location: /');
-
         LoginFormValidation::validate();
 
         $user = User::getByUsername($_REQUEST['username']);
@@ -43,9 +41,6 @@ class AuthController extends Controller
      */
     public function register ()
     {
-        if(Auth::user())
-            header('Location: /');
-
         RegisterFormValidation::validate();
 
         $data = [
@@ -56,7 +51,9 @@ class AuthController extends Controller
         ];
 
         if(User::create($data)){
-            dump(User::all());
+            header('Location: /login');
+        }else{
+            throw new Exception('User could not be created.');
         }
     }
 
@@ -67,9 +64,6 @@ class AuthController extends Controller
      */
     public function loginForm () : void
     {
-        if(Auth::user())
-            header('Location: /');
-
         view('auth.login');
     }
 
@@ -80,9 +74,6 @@ class AuthController extends Controller
      */
     public function registerForm () : void
     {
-        if(Auth::user())
-            header('Location: /');
-
         view('auth.register');
     }
 
